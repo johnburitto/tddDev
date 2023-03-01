@@ -3,6 +3,7 @@ package com.johnburitto.tdddev.service;
 import com.johnburitto.tdddev.dto.PatientDto;
 import com.johnburitto.tdddev.model.Patient;
 import com.johnburitto.tdddev.repository.PatientRepository;
+import com.johnburitto.tdddev.service.interfaces.IService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

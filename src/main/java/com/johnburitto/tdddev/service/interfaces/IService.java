@@ -1,4 +1,4 @@
-package com.johnburitto.tdddev.service;
+package com.johnburitto.tdddev.service.interfaces;
 
 import java.util.List;
 

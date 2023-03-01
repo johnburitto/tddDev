@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+
+spring:
+  data:
+    mongodb:
+      username: root
+      password: password
+      authentication-database: admin
+      database: testTddDev
+      host: localhost
+      port: 27017

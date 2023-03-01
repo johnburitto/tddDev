@@ -17,12 +17,12 @@ public class Patient extends AuditMetadata {
     private String id;
     private String name;
     private String phoneNumber;
-    private String eMail;
+    private String email;
 
     public Patient(String name, String phoneNumber, String eMail) {
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.eMail = eMail;
+        this.email = eMail;
     }
 
     @Override

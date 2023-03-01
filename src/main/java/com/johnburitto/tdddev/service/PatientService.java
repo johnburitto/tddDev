@@ -5,7 +5,6 @@ import com.johnburitto.tdddev.model.Patient;
 import com.johnburitto.tdddev.repository.PatientRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,25 +29,20 @@ public class PatientService implements IService<Patient, PatientDto> {
     public Patient create(PatientDto patientDto) {
         var patient = new Patient();
 
-        patient.setId(patientDto.id());
         patient.setName(patientDto.name());
         patient.setPhoneNumber(patientDto.phoneNumber());
         patient.setEMail(patientDto.eMail());
-        patient.setCreatedAt(LocalDateTime.now());
-        patient.setUpdatedAt(LocalDateTime.now());
 
         return repository.save(patient);
     }
 
     @Override
-    public Patient update(PatientDto patientDto) {
-        var patient = getById(patientDto.id());
+    public Patient update(String id, PatientDto patientDto) {
+        var patient = getById(id);
 
-        patient.setId(patientDto.id());
         patient.setName(patientDto.name());
         patient.setPhoneNumber(patientDto.phoneNumber());
         patient.setEMail(patientDto.eMail());
-        patient.setUpdatedAt(LocalDateTime.now());
 
         return repository.save(patient);
     }

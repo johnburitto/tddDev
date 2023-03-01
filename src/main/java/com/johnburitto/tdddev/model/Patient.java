@@ -3,24 +3,21 @@ package com.johnburitto.tdddev.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.*;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Document
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Patient {
+public class Patient extends AuditMetadata {
     @Id
     private String id;
     private String name;
     private String phoneNumber;
     private String eMail;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
     public Patient(String name, String phoneNumber, String eMail) {
         this.name = name;

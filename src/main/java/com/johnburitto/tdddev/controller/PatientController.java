@@ -33,11 +33,7 @@ public class PatientController {
 
     @PutMapping("/update/{id}")
     public Patient update(@PathVariable String id, @RequestBody PatientDto patientDto) {
-        if (!id.equals(patientDto.id())) {
-            throw new IllegalArgumentException("Id don't match");
-        }
-
-        return service.update(patientDto);
+        return service.update(id, patientDto);
     }
 
     @DeleteMapping("/delete/{id}")

@@ -6,6 +6,6 @@ public interface IService<T, V> {
     List<T> getAll();
     T getById(String id);
     T create(V v);
-    T update(V v);
+    T update(String id, V v);
     void delete(String id);
 }

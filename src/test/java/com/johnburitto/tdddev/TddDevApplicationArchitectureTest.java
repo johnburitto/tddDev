@@ -226,16 +226,13 @@ class TddDevApplicationArchitectureTest {
 
     }
 
-/*  @Test
-    void modelShouldHaveLombokAnnotations() {
+    @Test
+    void controllerShouldBeAnnotatedRequestControllerAndRequestMapping() {
         classes()
-                .that().resideInAPackage("..model..")
-                .should()
-                .beAnnotatedWith(AllArgsConstructor.class)
-                .andShould()
-                .beAnnotatedWith(NoArgsConstructor.class)
-                .andShould()
-                .beAnnotatedWith(Data.class)
+                .that().resideInAPackage("..controller..")
+                .should().beAnnotatedWith(RestController.class)
+                .andShould().beAnnotatedWith(RequestMapping.class)
                 .check(importedClasses);
-    }*/
+
+    }
 }

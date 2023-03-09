@@ -159,4 +159,16 @@ class PatientRepositoryTest {
         assertEquals("John", forTest.getName());
         assertEquals("john@gmail.com", forTest.getEmail());
     }
+
+    @Test
+    void itShouldCheckThatPatientAlreadyExist() {
+        //Given
+        String phoneNumber = "(567)8090";
+
+        //When
+        var result = underTest.existsPatientByPhoneNumber(phoneNumber);
+
+        //Then
+        assertTrue(result);
+    }
 }

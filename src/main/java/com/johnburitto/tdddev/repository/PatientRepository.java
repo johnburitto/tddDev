@@ -12,4 +12,5 @@ public interface PatientRepository extends MongoRepository<Patient, String> {
     List<Patient> findAllByCreatedAtAfter(LocalDateTime date);
     List<Patient> findAllByPhoneNumberContains(String cityCode);
     List<Patient> findAllByNameAndEmailContains(String name, String emailPart);
+    boolean existsPatientByPhoneNumber(String phoneNumber);
 }

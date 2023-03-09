@@ -30,6 +30,10 @@ public class PatientService implements IService<Patient, PatientDto> {
 
     @Override
     public Patient create(PatientDto patientDto) {
+        if (repository.existsPatientByPhoneNumber(patientDto.getPhoneNumber())) {
+            return null;
+        }
+
         var patient = new Patient();
 
         mapper.map(patientDto, patient);
@@ -41,7 +45,7 @@ public class PatientService implements IService<Patient, PatientDto> {
     public Patient update(String id, PatientDto patientDto) {
         var patient = getById(id);
 
-        patient = mapper.map(patientDto, Patient.class);
+        mapper.map(patientDto, patient);
 
         return repository.save(patient);
     }

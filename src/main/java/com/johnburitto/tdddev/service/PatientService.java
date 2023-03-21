@@ -25,13 +25,20 @@ public class PatientService implements IService<Patient, PatientDto> {
 
     @Override
     public Patient getById(String id) {
-        return repository.findById(id).orElse(null);
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
     }
 
     @Override
     public Patient create(PatientDto patientDto) {
         if (repository.existsPatientByPhoneNumber(patientDto.getPhoneNumber())) {
-            return null;
+            var existPatient = repository.findPatientByPhoneNumber(patientDto.getPhoneNumber()).get();
+
+            if (existPatient.getName().equals(patientDto.getName())) {
+                throw new IllegalStateException("This patient is already registered");
+            }
+            else {
+                throw new IllegalStateException(String.format("The number %s is already taken", patientDto.getPhoneNumber()));
+            }
         }
 
         var patient = new Patient();

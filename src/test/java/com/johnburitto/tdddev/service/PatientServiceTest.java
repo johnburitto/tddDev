@@ -11,6 +11,9 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -58,18 +61,130 @@ class PatientServiceTest {
     }
 
     @Test
-    void itNotShouldSavePatientWhenPhoneIsExist() {
+    void itNotShouldSavePatientWhenPhoneIsExistAndExceptionThrow() {
         //Given
         String phoneNumber = "000";
         String email = "example@example.com";
         var patientDto = new PatientDto("Some name", phoneNumber, email);
+        Patient john = new Patient("John", phoneNumber, email);
 
         given(mockRepository.existsPatientByPhoneNumber(phoneNumber)).willReturn(true);
+        given(mockRepository.findPatientByPhoneNumber(phoneNumber)).willReturn(Optional.of(john));
 
         //When
-        underTest.create(patientDto);
+        assertThatThrownBy(() -> underTest.create(patientDto))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(String.format("The number %s is already taken", patientDto.getPhoneNumber()));
 
         //Then
         verify(mockRepository, never()).save(any(Patient.class));
+    }
+
+    @Test
+    void itNotShouldSavePatientWhenPhoneAndNameIsExistAndExceptionThrow() {
+        //Given
+        String phoneNumber = "000";
+        String email = "example@example.com";
+        var patientDto = new PatientDto("John", phoneNumber, email);
+        Patient john = new Patient("John", phoneNumber, email);
+
+        given(mockRepository.existsPatientByPhoneNumber(phoneNumber)).willReturn(true);
+        given(mockRepository.findPatientByPhoneNumber(phoneNumber)).willReturn(Optional.of(john));
+
+        //When
+        assertThatThrownBy(() -> underTest.create(patientDto))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("This patient is already registered");
+
+        //Then
+        verify(mockRepository, never()).save(any(Patient.class));
+    }
+
+    @Test
+    void itShouldGetAllPatients() {
+        //Given
+        List<Patient> patients = List.of(
+                new Patient("1", "John", "911", "john@gmail.com"),
+                new Patient("2", "Freddie", "922", "freddie@gmail.com")
+        );
+
+        given(mockRepository.findAll()).willReturn(patients);
+
+        //When
+        var result = underTest.getAll();
+
+        //Then
+        assertThat(result).isNotNull();
+        assertThat(result).isNotEmpty();
+        assertThat(result).isEqualTo(patients);
+        assertThat(result.size()).isEqualTo(2);
+    }
+
+    @Test
+    void itShouldGetPatientById() {
+        //Given
+        Patient john = new Patient("1", "John", "911", "john@gmail.com");
+
+        given(mockRepository.findById("1")).willReturn(Optional.of(john));
+
+        //When
+        var result = underTest.getById("1");
+
+        //Then
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo("1");
+        assertThat(result.getName()).isEqualTo("John");
+        assertThat(result.getPhoneNumber()).isEqualTo("911");
+        assertThat(result.getEmail()).isEqualTo("john@gmail.com");
+    }
+
+    @Test
+    void itShouldThrowExceptionIfPatientDoesntExist() {
+        //Given
+        given(mockRepository.findById("2")).willReturn(Optional.empty());
+
+        //When
+        assertThatThrownBy(() -> underTest.getById("2"))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Not found");
+
+        //Then
+    }
+
+    @Test
+    void itShouldUpdatePatient() {
+        //Given
+        var oldJohn = new Patient("1", "John", "911", "oldJohn@gmail.com");
+        var patientDto = new PatientDto("John", "911", "john@gmail.com");
+
+        given(mockRepository.findById("1")).willReturn(Optional.of(oldJohn));
+
+        //When
+        underTest.update("1", patientDto);
+
+        //Then
+        then(mockRepository).should().save(argumentCaptor.capture());
+
+        var updatedPatient = argumentCaptor.getValue();
+
+        assertThat(updatedPatient).isNotNull();
+        assertThat(updatedPatient.getName()).isEqualTo("John");
+        assertThat(updatedPatient.getPhoneNumber()).isEqualTo("911");
+        assertThat(updatedPatient.getEmail()).isEqualTo("john@gmail.com");
+
+        verify(mockRepository).save(any(Patient.class));
+        verify(mockRepository, times(1)).save(updatedPatient);
+    }
+
+    @Test
+    void itShouldDeletePatient() {
+        //Given
+        var id = "1";
+
+        //When
+        underTest.delete(id);
+
+        //Then
+        verify(mockRepository, times(1)).deleteById(id);
     }
 }

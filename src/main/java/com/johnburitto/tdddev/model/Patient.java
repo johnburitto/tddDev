@@ -37,4 +37,18 @@ public class Patient extends AuditMetadata {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    @Override
+    public String toString() {
+        return "Patient{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", email='" + email + '\'' +
+                ", createdAt=" + getCreatedAt() +
+                ", updatedAt=" + getCreatedAt() +
+                ", createdBy='" + getCreatedBy() + '\'' +
+                ", updatedBy='" + getCreatedBy() + '\'' +
+                '}';
+    }
 }

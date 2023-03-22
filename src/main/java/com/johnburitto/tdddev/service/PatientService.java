@@ -30,6 +30,17 @@ public class PatientService implements IService<Patient, PatientDto> {
 
     @Override
     public Patient create(PatientDto patientDto) {
+        if (repository.existsPatientByPhoneNumber(patientDto.getPhoneNumber())) {
+            var existedPatient = repository.findPatientByPhoneNumber(patientDto.getPhoneNumber());
+
+            if (existedPatient.getName().equals(patientDto.getName())) {
+                throw new IllegalStateException("This patient already registered!");
+            }
+            else {
+                throw new IllegalStateException(String.format("Phone number %s already taken", patientDto.getPhoneNumber()));
+            }
+        }
+
         var patient = new Patient();
 
         mapper.map(patientDto, patient);
@@ -41,7 +52,7 @@ public class PatientService implements IService<Patient, PatientDto> {
     public Patient update(String id, PatientDto patientDto) {
         var patient = getById(id);
 
-        patient = mapper.map(patientDto, Patient.class);
+        mapper.map(patientDto, patient);
 
         return repository.save(patient);
     }
@@ -49,5 +60,9 @@ public class PatientService implements IService<Patient, PatientDto> {
     @Override
     public void delete(String id) {
         repository.deleteById(id);
+    }
+
+    public Patient getByPhoneNumber(String phoneNumber) {
+        return repository.findPatientByPhoneNumber(phoneNumber);
     }
 }

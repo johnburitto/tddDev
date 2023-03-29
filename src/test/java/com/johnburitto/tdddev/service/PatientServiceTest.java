@@ -141,12 +141,14 @@ class PatientServiceTest {
     @Test
     void itShouldThrowExceptionIfPatientDoesntExist() {
         //Given
-        given(mockRepository.findById("2")).willReturn(Optional.empty());
+        String id = "2";
+
+        given(mockRepository.findById(id)).willReturn(Optional.empty());
 
         //When
-        assertThatThrownBy(() -> underTest.getById("2"))
+        assertThatThrownBy(() -> underTest.getById(id))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessage("Not found");
+                .hasMessage(String.format("Not found with id = %s", id));
 
         //Then
     }
@@ -186,5 +188,18 @@ class PatientServiceTest {
 
         //Then
         verify(mockRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    void itThrowExceptionWhenPatientDoesntInDatabase() {
+        //Given
+        var id = "2";
+
+        //When
+        assertThatThrownBy(() -> underTest.delete(id))
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage(String.format("Not found with id = %s", id));
+
+        //Then
     }
 }

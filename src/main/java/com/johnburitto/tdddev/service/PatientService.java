@@ -25,7 +25,7 @@ public class PatientService implements IService<Patient, PatientDto> {
 
     @Override
     public Patient getById(String id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        return repository.findById(id).orElseThrow(() -> new RuntimeException(String.format("Not found with id = %s", id)));
     }
 
     @Override
@@ -59,6 +59,6 @@ public class PatientService implements IService<Patient, PatientDto> {
 
     @Override
     public void delete(String id) {
-        repository.deleteById(id);
+        repository.delete(getById(id));
     }
 }

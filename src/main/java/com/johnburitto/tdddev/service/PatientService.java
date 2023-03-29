@@ -3,6 +3,7 @@ package com.johnburitto.tdddev.service;
 import com.johnburitto.tdddev.dto.PatientDto;
 import com.johnburitto.tdddev.model.Patient;
 import com.johnburitto.tdddev.repository.PatientRepository;
+import com.johnburitto.tdddev.utils.DataUtils;
 import org.dozer.DozerBeanMapper;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,10 @@ public class PatientService implements IService<Patient, PatientDto> {
 
     @Override
     public Patient create(PatientDto patientDto) {
+        if (!DataUtils.isValidPhoneNumber(patientDto.getPhoneNumber())) {
+            throw new IllegalStateException(String.format("The number %s isn't valid", patientDto.getPhoneNumber()));
+        }
+
         if (repository.existsPatientByPhoneNumber(patientDto.getPhoneNumber())) {
             var existPatient = repository.findPatientByPhoneNumber(patientDto.getPhoneNumber()).get();
 

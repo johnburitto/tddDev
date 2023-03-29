@@ -81,6 +81,22 @@ class PatientServiceTest {
     }
 
     @Test
+    void itNotShouldSavePatientWhenPhoneIsNotValid() {
+        //Given
+        String phoneNumber = "0";
+        String email = "example@example.com";
+        var patientDto = new PatientDto("Some name", phoneNumber, email);
+
+        //When
+        assertThatThrownBy(() -> underTest.create(patientDto))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage(String.format("The number %s isn't valid", patientDto.getPhoneNumber()));
+
+        //Then
+        verify(mockRepository, never()).save(any(Patient.class));
+    }
+
+    @Test
     void itNotShouldSavePatientWhenPhoneAndNameIsExistAndExceptionThrow() {
         //Given
         String phoneNumber = "000";
